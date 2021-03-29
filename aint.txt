@@ -1,0 +1,6 @@
+future          - 100000 (3PDb1ULFjazuzPeWkF2vqd1nomKh4ctq9y2)
+apps            - 25000 (3PDb1ULFjazuzPeWkF2vqd1nomKh4ctq9y2)
+crowdfunding    - 10000 (3PBmmxKhFcDhb8PrDdCdvw2iGMPnp7VuwPy)
+pragmatic       - 5000 (3P2EtZMgEN4W49hLXy966D53oHiE52gawhn)
+miners          - 3000 (3PLJQASFXtiohqbirYwSswjjbYGLfaGDEQy)
+friends         - 1000 (3PJySTACVDWXFFzVFMPSSzAK3XHfDbekHc4)

@@ -1,0 +1,3 @@
+help - Show help information
+status - Get your AnonFunder status
+withdraw - Withdraw your funds
