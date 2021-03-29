@@ -53,5 +53,5 @@ func (wm *WavesMonitor) sellAsset(talr *gowaves.TransactionsAddressLimitResponse
 
 func initWavesMonitor() {
 	wm = &WavesMonitor{}
-	wm.start()
+	go wm.start()
 }

@@ -38,5 +38,7 @@ func main() {
 
 	initCommands()
 
+	logTelegram("AnonFunder daemon successfully started. 🚀")
+
 	bot.Start()
 }
