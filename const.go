@@ -27,4 +27,13 @@ const (
 
 	// MatcherNodeURL is an URL for Waves Node
 	MatcherNodeURL = "https://matcher.waves.exchange"
+
+	// MatcherPublicKey represents Waves matcher public key
+	MatcherPublicKey = "9cpfKN9suPNvfeUNphzxXMjcnn974eme8ZhWUjaktzU5"
+
+	// WavesFee is Waves regular fee amount
+	WavesFee = 100000
+
+	// WavesExchangeFee is Waves exchange fee amount
+	WavesExchangeFee = 300000
 )

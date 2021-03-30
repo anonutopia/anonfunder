@@ -53,15 +53,71 @@ func (wm *WavesMonitor) processTransaction(tr *Transaction, talr *gowaves.Transa
 }
 
 func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResponse) {
-	log.Printf("%#v", talr)
+	waves := talr.Amount - WavesFee - WavesExchangeFee
+	if waves > 0 {
+		a, p := wm.calculateAssetAmount(uint64(waves))
+		abr, err := gowaves.WNC.AddressesBalance(TokenAddress)
+		if err == nil {
+			nabr, _ := gowaves.WNC.AddressesBalance(TokenAddress)
+			if purchaseAsset(a, uint64(waves), TokenID, p) == nil {
+				for abr.Balance == nabr.Balance {
+					time.Sleep(time.Second * 10)
+					nabr, _ = gowaves.WNC.AddressesBalance(TokenAddress)
+				}
+
+				sendAsset(a, TokenID, talr.Sender)
+				wm.splitWaves(waves)
+			}
+		}
+	}
 }
 
 func (wm *WavesMonitor) sellAsset(talr *gowaves.TransactionsAddressLimitResponse) {
-	log.Printf("%#v", talr)
+	log.Printf("%#v\n\n", talr)
 }
 
 func (wm *WavesMonitor) processExchangeOrder(tr *Transaction, talr *gowaves.TransactionsAddressLimitResponse) {
-	log.Printf("%#v", talr)
+	if talr.Order1.Sender != talr.Order2.Sender {
+		waves := int(float64(talr.Amount) / float64(SatInBTC) * float64(talr.Price))
+		wm.splitWaves(waves)
+	}
+}
+
+func (wm *WavesMonitor) splitWaves(waves int) {
+	log.Println(waves)
+}
+
+func (wm *WavesMonitor) calculateAssetAmount(wavesAmount uint64) (amount uint64, price uint64) {
+	opr, err := gowaves.WMC.OrderbookPair(TokenID, "WAVES", 10)
+	if err != nil {
+		log.Println(err)
+		return 0, 0
+	}
+
+	waves := uint64(0)
+
+	for i, a := range opr.Asks {
+		if i == 0 {
+			price = a.Price
+		}
+		if wavesAmount > 0 {
+			w := a.Amount * a.Price / SatInBTC
+			newWaves := uint64(0)
+			if w < wavesAmount {
+				newWaves = w
+				amount += a.Amount
+				waves += newWaves
+				wavesAmount -= newWaves
+			} else {
+				newWaves = wavesAmount
+				amount += uint64(float64(wavesAmount) / float64(a.Price) * float64(SatInBTC))
+				waves += newWaves
+				wavesAmount -= newWaves
+			}
+		}
+	}
+
+	return amount, price
 }
 
 func initWavesMonitor() {

@@ -13,6 +13,7 @@ type Config struct {
 	TelegramAPIKey string `json:"telegram_api_key"`
 	PublicKey      string `json:"public_key"`
 	PrivateKey     string `json:"private_key"`
+	Founder        string `json:"founder"`
 }
 
 // Load method loads configuration file to Config struct
