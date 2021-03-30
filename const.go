@@ -21,4 +21,10 @@ const (
 
 	// WavesMonitorTick interval in seconds
 	WavesMonitorTick = 10
+
+	// WavesNodeURL is an URL for Waves Node
+	WavesNodeURL = "https://nodes.wavesnodes.com"
+
+	// MatcherNodeURL is an URL for Waves Node
+	MatcherNodeURL = "https://matcher.waves.exchange"
 )

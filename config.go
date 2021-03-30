@@ -11,6 +11,8 @@ type Config struct {
 	Dev            bool   `json:"dev"`
 	Debug          bool   `json:"debug"`
 	TelegramAPIKey string `json:"telegram_api_key"`
+	PublicKey      string `json:"public_key"`
+	PrivateKey     string `json:"private_key"`
 }
 
 // Load method loads configuration file to Config struct

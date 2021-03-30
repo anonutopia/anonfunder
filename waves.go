@@ -39,16 +39,29 @@ func (wm *WavesMonitor) checkTransaction(talr *gowaves.TransactionsAddressLimitR
 }
 
 func (wm *WavesMonitor) processTransaction(tr *Transaction, talr *gowaves.TransactionsAddressLimitResponse) {
+	if talr.Type == 7 {
+		wm.processExchangeOrder(tr, talr)
+	} else if talr.Type == 4 && talr.Recipient == TokenAddress {
+		if len(talr.AssetID) == 0 {
+			wm.purchaseAsset(talr)
+		} else if talr.AssetID == TokenID {
+			wm.sellAsset(talr)
+		}
+	}
 	tr.Processed = true
 	db.Save(tr)
 }
 
 func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResponse) {
-
+	log.Printf("%#v", talr)
 }
 
 func (wm *WavesMonitor) sellAsset(talr *gowaves.TransactionsAddressLimitResponse) {
+	log.Printf("%#v", talr)
+}
 
+func (wm *WavesMonitor) processExchangeOrder(tr *Transaction, talr *gowaves.TransactionsAddressLimitResponse) {
+	log.Printf("%#v", talr)
 }
 
 func initWavesMonitor() {
