@@ -66,7 +66,7 @@ func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResp
 				}
 
 				sendAsset(a, TokenID, talr.Sender)
-				wm.splitWaves(waves)
+				wm.splitWaves(waves, talr.Sender)
 			}
 		}
 	}
@@ -79,12 +79,34 @@ func (wm *WavesMonitor) sellAsset(talr *gowaves.TransactionsAddressLimitResponse
 func (wm *WavesMonitor) processExchangeOrder(tr *Transaction, talr *gowaves.TransactionsAddressLimitResponse) {
 	if talr.Order1.Sender != talr.Order2.Sender {
 		waves := int(float64(talr.Amount) / float64(SatInBTC) * float64(talr.Price))
-		wm.splitWaves(waves)
+
+		if talr.Order1.Sender != TokenAddress && talr.Order1.OrderType == "buy" {
+			wm.splitWaves(waves, talr.Order1.Sender)
+		}
 	}
 }
 
-func (wm *WavesMonitor) splitWaves(waves int) {
-	log.Println(waves)
+func (wm *WavesMonitor) splitWaves(waves int, sender string) {
+	// 40% to founder
+	founder := &User{Address: conf.Founder}
+	db.FirstOrCreate(founder, founder)
+	founder.AmountWaves += uint(float64(waves) * 0.4)
+	db.Save(founder)
+
+	// 40% for buy offers
+	kv := &KeyValue{Key: "buyFund"}
+	db.FirstOrCreate(kv, kv)
+	kv.ValueInt += uint64(float64(waves) * 0.4)
+	db.Save(kv)
+
+	// 5% to user who referred
+	u := getUser(sender)
+	r := &User{}
+	db.First(r, u.ReferralID)
+	r.AmountWaves += uint(float64(waves) * 0.05)
+	db.Save(r)
+
+	// 15% to AINTs holders (more than 1.0 AINT)
 }
 
 func (wm *WavesMonitor) calculateAssetAmount(wavesAmount uint64) (amount uint64, price uint64) {

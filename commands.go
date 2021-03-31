@@ -25,8 +25,6 @@ func statusCommand(m *tb.Message) {
 		u.getAddress(),
 		u.getAmountAint(),
 		u.getAmountWaves(),
-		u.getAmountBtc(),
-		u.getAmountEth(),
 	)
 	bot.Send(m.Sender, status)
 }

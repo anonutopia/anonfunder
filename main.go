@@ -39,6 +39,7 @@ func main() {
 	initCommands()
 
 	logTelegram("AnonFunder daemon successfully started. 🚀")
+	log.Println("AnonFunder daemon successfully started. 🚀")
 
 	bot.Start()
 }
