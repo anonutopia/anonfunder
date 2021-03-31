@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	macaron "gopkg.in/macaron.v1"
 	"gopkg.in/tucnak/telebot.v2"
 	"gorm.io/gorm"
 )
@@ -18,6 +19,8 @@ var pc *PriceClient
 var um *UserManager
 
 var wm *WavesMonitor
+
+var m *macaron.Macaron
 
 func main() {
 	initLangs()
@@ -37,6 +40,10 @@ func main() {
 	initWavesMonitor()
 
 	initCommands()
+
+	m = initMacaron()
+
+	m.Get("/:address/earnings.js", accumulatedEarnings)
 
 	logTelegram("AnonFunder daemon successfully started. 🚀")
 	log.Println("AnonFunder daemon successfully started. 🚀")

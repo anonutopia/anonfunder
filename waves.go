@@ -149,7 +149,7 @@ func (wm *WavesMonitor) doPayouts(height int, after string, total int, value int
 				}
 				u.AmountWaves += uint(amount)
 				db.Save(u)
-				log.Printf("Added interest: %s - %.6f", u.Address, float64(amount)/float64(SatInBTC))
+				log.Printf("Added interest: %s - %.8f", u.Address, float64(amount)/float64(SatInBTC))
 			}
 		}
 	}

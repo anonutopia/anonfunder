@@ -36,4 +36,7 @@ const (
 
 	// WavesExchangeFee is Waves exchange fee amount
 	WavesExchangeFee = 300000
+
+	// Port represents a port the app will listen on
+	Port = 5002
 )
