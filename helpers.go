@@ -16,7 +16,9 @@ import (
 
 func sendAsset(amount uint64, assetId string, recipient string) error {
 	if conf.Dev {
-		return errors.New(fmt.Sprintf("Not sending (dev): %d - %s - %s", amount, assetId, recipient))
+		err := errors.New(fmt.Sprintf("Not sending (dev): %d - %s - %s", amount, assetId, recipient))
+		log.Println(err)
+		return err
 	}
 
 	var assetBytes []byte

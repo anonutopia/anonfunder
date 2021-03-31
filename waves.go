@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/anonutopia/gowaves"
+	"github.com/wavesplatform/gowaves/pkg/crypto"
 )
 
 type WavesMonitor struct {
@@ -40,6 +41,12 @@ func (wm *WavesMonitor) checkTransaction(talr *gowaves.TransactionsAddressLimitR
 }
 
 func (wm *WavesMonitor) processTransaction(tr *Transaction, talr *gowaves.TransactionsAddressLimitResponse) {
+	attachment := ""
+
+	if len(talr.Attachment) > 0 {
+		attachment = string(crypto.MustBytesFromBase58(talr.Attachment))
+	}
+
 	if talr.Type == 7 {
 		wm.processExchangeOrder(tr, talr)
 	} else if talr.Type == 4 && talr.Recipient == TokenAddress {
@@ -47,8 +54,14 @@ func (wm *WavesMonitor) processTransaction(tr *Transaction, talr *gowaves.Transa
 			wm.purchaseAsset(talr)
 		} else if talr.AssetID == TokenID {
 			wm.sellAsset(talr)
+		} else if talr.AssetID == AHRKId &&
+			attachment == "collect" &&
+			talr.Amount == 950000 {
+
+			wm.collectEarnings(talr)
 		}
 	}
+
 	tr.Processed = true
 	db.Save(tr)
 }
@@ -192,6 +205,17 @@ func (wm *WavesMonitor) calculateAssetAmount(wavesAmount uint64) (amount uint64,
 	}
 
 	return amount, price
+}
+
+func (wm *WavesMonitor) collectEarnings(talr *gowaves.TransactionsAddressLimitResponse) {
+	u := getUser(talr.Sender)
+	if u.ID != 0 && u.AmountWaves > 0 {
+		err := sendAsset(uint64(u.AmountWaves), "", talr.Sender)
+		if err == nil {
+			u.AmountWaves = 0
+			db.Save(u)
+		}
+	}
 }
 
 func initWavesMonitor() {

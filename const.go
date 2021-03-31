@@ -39,4 +39,10 @@ const (
 
 	// Port represents a port the app will listen on
 	Port = 5002
+
+	// AHRKId is AHRK asset id
+	AHRKId = string("Gvs59WEEXVAQiRZwisUosG7fVNr8vnzS8mjkgqotrERT")
+
+	// AHRKDec represents number of decimals in AHRK
+	AHRKDec = uint64(1000000)
 )

@@ -25,7 +25,7 @@ type User struct {
 
 func getUser(address string) *User {
 	u := &User{Address: address}
-	db.First(u, u)
+	db.Unscoped().First(u, u)
 	return u
 }
 
