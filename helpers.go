@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -13,9 +15,9 @@ import (
 )
 
 func sendAsset(amount uint64, assetId string, recipient string) error {
-	// if conf.Dev {
-	// 	return errors.New(fmt.Sprintf("Not sending (dev): %d - %s - %s", amount, assetId, recipient))
-	// }
+	if conf.Dev {
+		return errors.New(fmt.Sprintf("Not sending (dev): %d - %s - %s", amount, assetId, recipient))
+	}
 
 	var assetBytes []byte
 
@@ -90,9 +92,9 @@ func sendAsset(amount uint64, assetId string, recipient string) error {
 }
 
 func purchaseAsset(amountAsset uint64, amountWaves uint64, assetId string, price uint64) error {
-	// if conf.Dev {
-	// 	return errors.New(fmt.Sprintf("Not sending (dev): %d - %s - %s", amount, assetId, recipient))
-	// }
+	if conf.Dev {
+		return errors.New(fmt.Sprintf("Not purchasing asset (dev): %d - %d - %s - %d", amountAsset, amountWaves, assetId, price))
+	}
 
 	var assetBytes []byte
 
