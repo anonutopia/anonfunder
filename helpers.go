@@ -163,3 +163,22 @@ func exclude(slice []string, val string) bool {
 	}
 	return false
 }
+
+func total(t int, height int, after string) (int, error) {
+	abdr, err := gowaves.WNC.AssetsBalanceDistribution(TokenID, height, 100, after)
+	if err != nil {
+		return 0, err
+	}
+
+	for a, v := range abdr.Items {
+		if !exclude(conf.Exclude, a) {
+			t = t + v
+		}
+	}
+
+	if abdr.HasNext {
+		return total(t, height, abdr.LastItem)
+	}
+
+	return t, nil
+}

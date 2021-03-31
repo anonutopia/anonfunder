@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"math/rand"
 	"time"
 
 	"github.com/anonutopia/gowaves"
@@ -107,6 +108,57 @@ func (wm *WavesMonitor) splitWaves(waves int, sender string) {
 	db.Save(r)
 
 	// 15% to AINTs holders (more than 1.0 AINT)
+	rest := uint(float64(waves) * 0.15)
+	ns, err := gowaves.WNC.NodeStatus()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	t, err := total(0, ns.BlockchainHeight-1, "")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	log.Println(t)
+	log.Println(rest)
+
+	err = wm.doPayouts(ns.BlockchainHeight-1, "", t, int(rest))
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func (wm *WavesMonitor) doPayouts(height int, after string, total int, value int) error {
+	abdr, err := gowaves.WNC.AssetsBalanceDistribution(TokenID, height, 100, after)
+	if err != nil {
+		return err
+	}
+
+	for a, v := range abdr.Items {
+		if !exclude(conf.Exclude, a) && v > int(SatInBTC) {
+			ratio := float64(v) / float64(total)
+			amount := int(float64(value) * ratio)
+
+			if amount > 0 {
+				u := &User{Address: a}
+				if err := db.FirstOrCreate(u, u).Error; err != nil {
+					u.TelegramID = int(SatInBTC) + rand.Intn(999999999-int(SatInBTC))
+					db.FirstOrCreate(u, u)
+				}
+				u.AmountWaves += uint(amount)
+				db.Save(u)
+				log.Printf("Added interest: %s - %.6f", u.Address, float64(amount)/float64(SatInBTC))
+			}
+		}
+	}
+
+	if abdr.HasNext {
+		return wm.doPayouts(height, abdr.LastItem, total, value)
+	}
+
+	return nil
 }
 
 func (wm *WavesMonitor) calculateAssetAmount(wavesAmount uint64) (amount uint64, price uint64) {
