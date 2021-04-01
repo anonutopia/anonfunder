@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	macaron "gopkg.in/macaron.v1"
 )
@@ -11,7 +12,9 @@ func accumulatedEarnings(ctx *macaron.Context) string {
 	address := ctx.Params("address")
 
 	u := &User{Address: address}
-	db.FirstOrCreate(u, u)
+	if err := db.Unscoped().FirstOrCreate(u, u).Error; err != nil {
+		log.Println(err)
+	}
 
 	earnings := float64(u.AmountWaves) / float64(SatInBTC)
 	response := fmt.Sprintf("document.getElementById('accumulatedEarnings').innerHTML = '%.4f';", earnings)

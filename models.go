@@ -32,7 +32,7 @@ func getUser(address string) *User {
 
 func getUserByTelegramID(m *tb.Message) *User {
 	u := &User{TelegramID: m.Sender.ID}
-	db.First(u, u)
+	db.Unscoped().First(u, u)
 	return u
 }
 
