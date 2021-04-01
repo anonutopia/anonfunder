@@ -59,6 +59,8 @@ func (wm *WavesMonitor) processTransaction(tr *Transaction, talr *gowaves.Transa
 			talr.Amount == 950000 {
 
 			wm.collectEarnings(talr)
+		} else if talr.AssetID == AHRKId {
+			wm.purchaseAssetAHRK(talr)
 		}
 	}
 
@@ -84,6 +86,12 @@ func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResp
 			}
 		}
 	}
+}
+
+func (wm *WavesMonitor) purchaseAssetAHRK(talr *gowaves.TransactionsAddressLimitResponse) {
+	waves := talr.Amount * 100 / int(pc.Prices.HRK)
+	a, _ := wm.calculateAssetAmount(uint64(waves))
+	sendAsset(a, TokenID, talr.Sender)
 }
 
 func (wm *WavesMonitor) sellAsset(talr *gowaves.TransactionsAddressLimitResponse) {
