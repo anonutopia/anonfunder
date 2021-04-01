@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"time"
@@ -69,6 +70,7 @@ func (wm *WavesMonitor) processTransaction(tr *Transaction, talr *gowaves.Transa
 }
 
 func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResponse) {
+	messageTelegram(fmt.Sprintf("We just had a new AINT purchase: %.8f WAVES 🚀", float64(talr.Amount)/float64(SatInBTC)), TelAnonTeam)
 	waves := talr.Amount - WavesFee - WavesExchangeFee
 	if waves > 0 {
 		a, p := wm.calculateAssetAmount(uint64(waves))
@@ -89,6 +91,7 @@ func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResp
 }
 
 func (wm *WavesMonitor) purchaseAssetAHRK(talr *gowaves.TransactionsAddressLimitResponse) {
+	messageTelegram(fmt.Sprintf("We just had a new AINT purchase: %.2f AHRK 🚀", float64(talr.Amount)/float64(AHRKDec)), TelAnonTeam)
 	waves := talr.Amount * 100 / int(pc.Prices.HRK)
 	a, _ := wm.calculateAssetAmount(uint64(waves))
 	sendAsset(a, TokenID, talr.Sender)
