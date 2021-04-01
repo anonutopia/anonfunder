@@ -20,12 +20,6 @@ func (um *UserManager) createUser(m *tb.Message) {
 	}
 }
 
-func (um *UserManager) getUser(m *tb.Message) *User {
-	u := &User{TelegramID: m.Sender.ID}
-	db.First(u, u)
-	return u
-}
-
 func initUserManager() *UserManager {
 	um := &UserManager{}
 	return um

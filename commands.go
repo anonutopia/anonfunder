@@ -19,7 +19,7 @@ func startCommand(m *tb.Message) {
 }
 
 func statusCommand(m *tb.Message) {
-	u := um.getUser(m)
+	u := getUserByTelegramID(m)
 	status := fmt.Sprintf(
 		gotrans.T("status"),
 		u.getAddress(),

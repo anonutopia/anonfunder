@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/anonutopia/gowaves"
+	tb "gopkg.in/tucnak/telebot.v2"
 	"gorm.io/gorm"
 )
 
@@ -26,6 +27,12 @@ type User struct {
 func getUser(address string) *User {
 	u := &User{Address: address}
 	db.Unscoped().First(u, u)
+	return u
+}
+
+func getUserByTelegramID(m *tb.Message) *User {
+	u := &User{TelegramID: m.Sender.ID}
+	db.First(u, u)
 	return u
 }
 
