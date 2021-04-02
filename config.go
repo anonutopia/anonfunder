@@ -14,6 +14,7 @@ type Config struct {
 	PublicKey      string   `json:"public_key"`
 	PrivateKey     string   `json:"private_key"`
 	Founder        string   `json:"founder"`
+	PostgreSQL     string   `json:"postgre_sql"`
 	Exclude        []string `json:"exclude"`
 }
 

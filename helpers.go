@@ -15,7 +15,7 @@ import (
 )
 
 func sendAsset(amount uint64, assetId string, recipient string) error {
-	if conf.Dev {
+	if conf.Dev || conf.Debug {
 		err := errors.New(fmt.Sprintf("Not sending (dev): %d - %s - %s", amount, assetId, recipient))
 		log.Println(err)
 		return err
@@ -94,7 +94,7 @@ func sendAsset(amount uint64, assetId string, recipient string) error {
 }
 
 func purchaseAsset(amountAsset uint64, amountWaves uint64, assetId string, price uint64) error {
-	if conf.Dev {
+	if conf.Dev || conf.Debug {
 		return errors.New(fmt.Sprintf("Not purchasing asset (dev): %d - %d - %s - %d", amountAsset, amountWaves, assetId, price))
 	}
 
