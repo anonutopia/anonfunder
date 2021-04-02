@@ -21,7 +21,7 @@ func initDb() *gorm.DB {
 	}
 
 	if conf.Dev {
-		db, err = gorm.Open(sqlite.Open("anote.db"), &dbconf)
+		db, err = gorm.Open(sqlite.Open("anonfunder.db"), &dbconf)
 	} else {
 		db, err = gorm.Open(postgres.Open(conf.PostgreSQL), &dbconf)
 	}

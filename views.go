@@ -16,7 +16,14 @@ func accumulatedEarnings(ctx *macaron.Context) string {
 		log.Println(err)
 	}
 
-	earnings := float64(u.AmountWaves) / float64(SatInBTC)
-	response := fmt.Sprintf("document.getElementById('accumulatedEarnings').innerHTML = '%.4f';", earnings)
+	response := fmt.Sprintf(
+		"document.getElementById('earningsWaves').value = %d;\n"+
+			"document.getElementById('earningsAhrk').value = %d;\n"+
+			"document.getElementById('earningsAeur').value = %d;\n",
+		u.AmountWaves,
+		u.AmountAhrk,
+		u.AmountAeur,
+	)
+
 	return response
 }

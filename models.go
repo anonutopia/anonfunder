@@ -22,6 +22,8 @@ type User struct {
 	ReferralID  uint
 	Referral    *User
 	AmountWaves uint
+	AmountAhrk  uint
+	AmountAeur  uint
 }
 
 func getUser(address string) *User {
