@@ -55,10 +55,7 @@ func (wm *WavesMonitor) processTransaction(tr *Transaction, talr *gowaves.Transa
 			wm.purchaseAsset(talr)
 		} else if talr.AssetID == TokenID {
 			wm.sellAsset(talr)
-		} else if talr.AssetID == AHRKId &&
-			attachment == "collect" &&
-			talr.Amount == 950000 {
-
+		} else if attachment == "collect" {
 			wm.collectEarnings(talr)
 		} else if talr.AssetID == AHRKId {
 			wm.purchaseAssetAHRK(talr)
