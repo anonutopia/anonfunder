@@ -17,13 +17,16 @@ type KeyValue struct {
 // User represents Telegram user
 type User struct {
 	gorm.Model
-	Address     string `gorm:"size:255;uniqueIndex"`
-	TelegramID  int    `gorm:"uniqueIndex"`
-	ReferralID  uint
-	Referral    *User
-	AmountWaves uint
-	AmountAhrk  uint
-	AmountAeur  uint
+	Address           string `gorm:"size:255;uniqueIndex"`
+	TelegramID        int    `gorm:"uniqueIndex"`
+	ReferralID        uint
+	Referral          *User
+	AmountWaves       uint
+	AmountAhrk        uint
+	AmountAeur        uint
+	AnoteRobotStarted bool    `sql:"DEFAULT:false"`
+	FunderBotStarted  bool    `sql:"DEFAULT:false"`
+	TempCode          *string `gorm:"size:255;uniqueIndex"`
 }
 
 func getUser(address string) *User {

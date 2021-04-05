@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/bykovme/gotrans"
 	tb "gopkg.in/tucnak/telebot.v2"
@@ -14,8 +15,13 @@ func initCommands() {
 }
 
 func startCommand(m *tb.Message) {
-	um.createUser(m)
-	bot.Send(m.Sender, gotrans.T("welcome"))
+	if len(m.Payload) > 0 {
+
+	}
+	log.Println("fdasfdsa")
+	// um.createUser(m)
+	// bot.Send(m.Sender, gotrans.T("welcome"))
+	log.Println(m.Payload)
 }
 
 func statusCommand(m *tb.Message) {
