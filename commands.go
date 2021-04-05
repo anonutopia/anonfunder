@@ -16,12 +16,28 @@ func initCommands() {
 
 func startCommand(m *tb.Message) {
 	if len(m.Payload) > 0 {
+		u := &User{TempCode: &m.Payload}
+		if err := db.FirstOrCreate(u, u).Error; err != nil {
+			log.Println(err)
+		}
 
+		if u.TelegramID == nil || *u.TelegramID == 0 {
+			u.TelegramID = &m.Sender.ID
+			u.FunderBotStarted = true
+			if err := db.Save(u).Error; err != nil {
+				log.Println(err)
+			}
+		} else {
+			u.FunderBotStarted = true
+			if err := db.Save(u).Error; err != nil {
+				log.Println(err)
+			}
+		}
+	} else {
+		um.createUser(m)
 	}
-	log.Println("fdasfdsa")
-	// um.createUser(m)
-	// bot.Send(m.Sender, gotrans.T("welcome"))
-	log.Println(m.Payload)
+
+	bot.Send(m.Sender, gotrans.T("welcome"))
 }
 
 func statusCommand(m *tb.Message) {

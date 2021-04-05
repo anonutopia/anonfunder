@@ -74,7 +74,6 @@ func (pc *PriceClient) wait() {
 	for pc.Prices == nil {
 		time.Sleep(time.Millisecond * 100)
 	}
-	return
 }
 
 func initPriceClient() *PriceClient {

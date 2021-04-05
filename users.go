@@ -8,7 +8,7 @@ type UserManager struct {
 }
 
 func (um *UserManager) createUser(m *tb.Message) {
-	u := &User{TelegramID: m.Sender.ID}
+	u := &User{TelegramID: &m.Sender.ID}
 	r := &User{}
 
 	db.FirstOrCreate(u, u)

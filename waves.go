@@ -110,7 +110,7 @@ func (wm *WavesMonitor) processExchangeOrder(tr *Transaction, talr *gowaves.Tran
 
 func (wm *WavesMonitor) splitWaves(waves int, sender string) {
 	// 40% to founder
-	founder := &User{Address: conf.Founder}
+	founder := &User{Address: &conf.Founder}
 	db.FirstOrCreate(founder, founder)
 	founder.AmountWaves += uint(float64(waves) * 0.4)
 	db.Save(founder)
@@ -163,14 +163,15 @@ func (wm *WavesMonitor) doPayouts(height int, after string, total int, value int
 			amount := int(float64(value) * ratio)
 
 			if amount > 0 {
-				u := &User{Address: a}
+				u := &User{Address: &a}
 				if err := db.FirstOrCreate(u, u).Error; err != nil {
-					u.TelegramID = int(SatInBTC) + rand.Intn(999999999-int(SatInBTC))
+					tid := int(SatInBTC) + rand.Intn(999999999-int(SatInBTC))
+					u.TelegramID = &tid
 					db.FirstOrCreate(u, u)
 				}
 				u.AmountWaves += uint(amount)
 				db.Save(u)
-				log.Printf("Added interest: %s - %.8f", u.Address, float64(amount)/float64(SatInBTC))
+				log.Printf("Added interest: %s - %.8f", *u.Address, float64(amount)/float64(SatInBTC))
 			}
 		}
 	}

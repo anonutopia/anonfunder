@@ -17,8 +17,8 @@ type KeyValue struct {
 // User represents Telegram user
 type User struct {
 	gorm.Model
-	Address           string `gorm:"size:255;uniqueIndex"`
-	TelegramID        int    `gorm:"uniqueIndex"`
+	Address           *string `gorm:"size:255;uniqueIndex"`
+	TelegramID        *int    `gorm:"uniqueIndex"`
 	ReferralID        uint
 	Referral          *User
 	AmountWaves       uint
@@ -30,27 +30,27 @@ type User struct {
 }
 
 func getUser(address string) *User {
-	u := &User{Address: address}
+	u := &User{Address: &address}
 	db.Unscoped().First(u, u)
 	return u
 }
 
 func getUserByTelegramID(m *tb.Message) *User {
-	u := &User{TelegramID: m.Sender.ID}
+	u := &User{TelegramID: &m.Sender.ID}
 	db.Unscoped().First(u, u)
 	return u
 }
 
 func (u *User) getAddress() string {
-	if len(u.Address) > 0 {
-		return u.Address
+	if len(*u.Address) > 0 {
+		return *u.Address
 	}
 
 	return "no address"
 }
 
 func (u *User) getAmountAint() float64 {
-	abr, err := gowaves.WNC.AssetsBalance(u.Address, TokenID)
+	abr, err := gowaves.WNC.AssetsBalance(*u.Address, TokenID)
 	if err == nil {
 		return float64(abr.Balance) / float64(SatInBTC)
 	}
