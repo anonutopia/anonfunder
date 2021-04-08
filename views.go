@@ -56,7 +56,5 @@ func accumulatedEarnings(ctx *macaron.Context) string {
 		u.AmountAeur,
 	)
 
-	log.Println(ref)
-
 	return response
 }
