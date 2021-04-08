@@ -50,7 +50,7 @@ func (wm *WavesMonitor) processTransaction(tr *Transaction, talr *gowaves.Transa
 
 	if talr.Type == 7 {
 		wm.processExchangeOrder(tr, talr)
-	} else if talr.Type == 4 && talr.Recipient == TokenAddress {
+	} else if talr.Type == 4 && talr.Recipient == TokenAddress && !exclude(conf.Exclude, talr.Sender) {
 		if len(talr.AssetID) == 0 {
 			wm.purchaseAsset(talr)
 		} else if talr.AssetID == TokenID {
