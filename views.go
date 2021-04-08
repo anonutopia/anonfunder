@@ -16,6 +16,19 @@ func accumulatedEarnings(ctx *macaron.Context) string {
 		log.Println(err)
 	}
 
+	ref := ctx.GetCookie("referral")
+	if len(ref) > 0 {
+		r := &User{}
+
+		if err := db.Where("code = ?", ref).First(r).Error; err != nil {
+			db.Where("nickname = ?", ref).First(r)
+		}
+
+		if r.ID != 0 && u.ReferralID == 0 {
+			u.ReferralID = r.ID
+		}
+	}
+
 	rs := randString(10)
 	u.TempCode = &rs
 	db.Save(u)
@@ -30,12 +43,20 @@ func accumulatedEarnings(ctx *macaron.Context) string {
 		res += fmt.Sprintf("document.getElementById('btnFunderBot').href='%s';\n", link)
 	}
 
+	if !u.AnoteRobotStarted {
+		link := fmt.Sprintf("https://t.me/AnoteRobot?start=%s", *u.TempCode)
+		res += "document.getElementById('btnAnoteRobot').classList.remove('disabled');\n"
+		res += fmt.Sprintf("document.getElementById('btnAnoteRobot').href='%s';\n", link)
+	}
+
 	response := fmt.Sprintf(
 		res,
 		u.AmountWaves,
 		u.AmountAhrk,
 		u.AmountAeur,
 	)
+
+	log.Println(ref)
 
 	return response
 }
