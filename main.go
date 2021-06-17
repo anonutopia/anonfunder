@@ -5,7 +5,6 @@ import (
 
 	macaron "gopkg.in/macaron.v1"
 	"gopkg.in/tucnak/telebot.v2"
-	tb "gopkg.in/tucnak/telebot.v2"
 	"gorm.io/gorm"
 )
 
@@ -48,10 +47,6 @@ func main() {
 
 	logTelegram("AnonFunder daemon successfully started. 🚀")
 	log.Println("AnonFunder daemon successfully started. 🚀")
-
-	bot.Handle(telebot.OnText, func(m *tb.Message) {
-		log.Println(m.Chat.ID)
-	})
 
 	bot.Start()
 }
