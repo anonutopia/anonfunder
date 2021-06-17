@@ -13,6 +13,9 @@ const (
 	// TelAnonTeam group for team messages
 	TelAnonTeam = -1001280228955
 
+	// TelKriptokuna group for Kriptokuna messages
+	TelKriptokuna = -1001456424919
+
 	// TelPollerTimeout is Telegram poller timeout in seconds
 	TelPollerTimeout = 30
 

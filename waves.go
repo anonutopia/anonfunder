@@ -49,17 +49,19 @@ func (wm *WavesMonitor) processTransaction(tr *Transaction, talr *gowaves.Transa
 		attachment = string(crypto.MustBytesFromBase58(talr.Attachment))
 	}
 
-	if talr.Type == 7 {
-		wm.processExchangeOrder(tr, talr)
-	} else if talr.Type == 4 && talr.Recipient == TokenAddress && !exclude(conf.Exclude, talr.Sender) {
-		if len(talr.AssetID) == 0 {
-			wm.purchaseAsset(talr)
-		} else if talr.AssetID == TokenID {
-			wm.sellAsset(talr)
-		} else if attachment == "collect" {
-			wm.collectEarnings(talr)
-		} else if talr.AssetID == AHRKId {
-			wm.purchaseAssetAHRK(talr)
+	if talr.Timestamp >= wm.StartedTime {
+		if talr.Type == 7 {
+			wm.processExchangeOrder(tr, talr)
+		} else if talr.Type == 4 && talr.Recipient == TokenAddress && !exclude(conf.Exclude, talr.Sender) {
+			if len(talr.AssetID) == 0 {
+				wm.purchaseAsset(talr)
+			} else if talr.AssetID == TokenID {
+				wm.sellAsset(talr)
+			} else if attachment == "collect" {
+				wm.collectEarnings(talr)
+			} else if talr.AssetID == AHRKId {
+				wm.purchaseAssetAHRK(talr)
+			}
 		}
 	}
 
@@ -69,6 +71,7 @@ func (wm *WavesMonitor) processTransaction(tr *Transaction, talr *gowaves.Transa
 
 func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResponse) {
 	messageTelegram(fmt.Sprintf("We just had a new AINT purchase: %.8f WAVES 🚀", float64(talr.Amount)/float64(SatInBTC)), TelAnonTeam)
+	messageTelegram(fmt.Sprintf("We just had a new AINT purchase: %.8f WAVES 🚀", float64(talr.Amount)/float64(SatInBTC)), TelKriptokuna)
 	waves := talr.Amount - WavesFee - WavesExchangeFee
 	if waves > 0 {
 		a, p := wm.calculateAssetAmount(uint64(waves))
@@ -90,6 +93,7 @@ func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResp
 
 func (wm *WavesMonitor) purchaseAssetAHRK(talr *gowaves.TransactionsAddressLimitResponse) {
 	messageTelegram(fmt.Sprintf("We just had a new AINT purchase: %.2f AHRK 🚀", float64(talr.Amount)/float64(AHRKDec)), TelAnonTeam)
+	messageTelegram(fmt.Sprintf("We just had a new AINT purchase: %.2f AHRK 🚀", float64(talr.Amount)/float64(AHRKDec)), TelKriptokuna)
 	waves := talr.Amount * 100 / int(pc.Prices.HRK)
 	a, _ := wm.calculateAssetAmount(uint64(waves))
 	sendAsset(a, TokenID, talr.Sender)
