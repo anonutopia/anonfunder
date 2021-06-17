@@ -21,6 +21,7 @@ func (wm *WavesMonitor) start() {
 		pages, err := gowaves.WNC.TransactionsAddressLimit(TokenAddress, 100)
 		if err != nil {
 			log.Println(err)
+			logTelegram(err.Error())
 		}
 
 		if len(pages) > 0 {
@@ -96,6 +97,7 @@ func (wm *WavesMonitor) purchaseAssetAHRK(talr *gowaves.TransactionsAddressLimit
 
 func (wm *WavesMonitor) sellAsset(talr *gowaves.TransactionsAddressLimitResponse) {
 	log.Printf("%#v\n\n", talr)
+	logTelegram(fmt.Sprintf("%#v\n\n", talr))
 }
 
 func (wm *WavesMonitor) processExchangeOrder(tr *Transaction, talr *gowaves.TransactionsAddressLimitResponse) {
@@ -133,21 +135,21 @@ func (wm *WavesMonitor) splitWaves(waves int, sender string) {
 	ns, err := gowaves.WNC.NodeStatus()
 	if err != nil {
 		log.Println(err)
+		logTelegram(err.Error())
 		return
 	}
 
 	t, err := total(0, ns.BlockchainHeight-1, "")
 	if err != nil {
 		log.Println(err)
+		logTelegram(err.Error())
 		return
 	}
-
-	log.Println(t)
-	log.Println(rest)
 
 	err = wm.doPayouts(ns.BlockchainHeight-1, "", t, int(rest))
 	if err != nil {
 		log.Println(err)
+		logTelegram(err.Error())
 	}
 }
 
@@ -172,6 +174,7 @@ func (wm *WavesMonitor) doPayouts(height int, after string, total int, value int
 				u.AmountWaves += uint(amount)
 				db.Save(u)
 				log.Printf("Added interest: %s - %.8f", *u.Address, float64(amount)/float64(SatInBTC))
+				logTelegram(fmt.Sprintf("Added interest: %s - %.8f", *u.Address, float64(amount)/float64(SatInBTC)))
 			}
 		}
 	}
@@ -187,6 +190,7 @@ func (wm *WavesMonitor) calculateAssetAmount(wavesAmount uint64) (amount uint64,
 	opr, err := gowaves.WMC.OrderbookPair(TokenID, "WAVES", 10)
 	if err != nil {
 		log.Println(err)
+		logTelegram(err.Error())
 		return 0, 0
 	}
 

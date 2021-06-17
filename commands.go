@@ -19,6 +19,7 @@ func startCommand(m *tb.Message) {
 		u := &User{TempCode: &m.Payload}
 		if err := db.FirstOrCreate(u, u).Error; err != nil {
 			log.Println(err)
+			logTelegram(err.Error())
 		}
 
 		if u.TelegramID == nil || *u.TelegramID == 0 {
@@ -26,11 +27,13 @@ func startCommand(m *tb.Message) {
 			u.FunderBotStarted = true
 			if err := db.Save(u).Error; err != nil {
 				log.Println(err)
+				logTelegram(err.Error())
 			}
 		} else {
 			u.FunderBotStarted = true
 			if err := db.Save(u).Error; err != nil {
 				log.Println(err)
+				logTelegram(err.Error())
 			}
 		}
 	} else {

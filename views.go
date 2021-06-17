@@ -14,6 +14,7 @@ func accumulatedEarnings(ctx *macaron.Context) string {
 	u := &User{Address: &address}
 	if err := db.Unscoped().FirstOrCreate(u, u).Error; err != nil {
 		log.Println(err)
+		logTelegram(err.Error())
 	}
 
 	ref := ctx.GetCookie("referral")
