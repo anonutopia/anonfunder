@@ -44,11 +44,11 @@ func accumulatedEarnings(ctx *macaron.Context) string {
 		res += fmt.Sprintf("document.getElementById('btnFunderBot').href='%s';\n", link)
 	}
 
-	if !u.AnoteRobotStarted {
-		link := fmt.Sprintf("https://t.me/AnoteRobot?start=%s", *u.TempCode)
-		res += "document.getElementById('btnAnoteRobot').classList.remove('disabled');\n"
-		res += fmt.Sprintf("document.getElementById('btnAnoteRobot').href='%s';\n", link)
-	}
+	// if !u.AnoteRobotStarted {
+	// 	link := fmt.Sprintf("https://t.me/AnoteRobot?start=%s", *u.TempCode)
+	// 	res += "document.getElementById('btnAnoteRobot').classList.remove('disabled');\n"
+	// 	res += fmt.Sprintf("document.getElementById('btnAnoteRobot').href='%s';\n", link)
+	// }
 
 	response := fmt.Sprintf(
 		res,

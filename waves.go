@@ -72,6 +72,7 @@ func (wm *WavesMonitor) processTransaction(tr *Transaction, talr *gowaves.Transa
 func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResponse) {
 	amountEur := (float64(talr.Amount) / float64(SatInBTC)) * pc.Prices.EUR
 	messageTelegram(fmt.Sprintf(tr("purchase", "hr"), float64(talr.Amount)/float64(SatInBTC), amountEur), TelAnonTeam)
+	messageTelegram(fmt.Sprintf(tr("purchase", "hr"), float64(talr.Amount)/float64(SatInBTC), amountEur), TelKriptokuna)
 	waves := talr.Amount - WavesFee - WavesExchangeFee
 	if waves > 0 {
 		a, p := wm.calculateAssetAmount(uint64(waves))
@@ -93,6 +94,7 @@ func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResp
 
 func (wm *WavesMonitor) purchaseAssetAHRK(talr *gowaves.TransactionsAddressLimitResponse) {
 	messageTelegram(fmt.Sprintf(tr("purchaseAhrk", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelAnonTeam)
+	messageTelegram(fmt.Sprintf(tr("purchaseAhrk", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelKriptokuna)
 	waves := talr.Amount * 100 / int(pc.Prices.HRK)
 	a, _ := wm.calculateAssetAmount(uint64(waves))
 	sendAsset(a, TokenID, talr.Sender)
