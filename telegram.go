@@ -40,3 +40,22 @@ func messageTelegram(message string, groupId int) {
 		log.Println(err)
 	}
 }
+
+func messageTelegramPin(message string, groupId int) {
+	var group *tb.Chat
+	if conf.Dev {
+		group = &tb.Chat{ID: TelAnonOps}
+	} else {
+		group = &tb.Chat{ID: int64(groupId)}
+	}
+	if m, err := bot.Send(group, message); err != nil {
+		log.Println(err)
+		logTelegram(err.Error())
+	} else {
+		err := bot.Pin(m)
+		if err != nil {
+			log.Println(err)
+			logTelegram(err.Error())
+		}
+	}
+}

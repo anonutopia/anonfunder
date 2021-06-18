@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 	"math/rand"
 	"time"
 
@@ -71,11 +72,13 @@ func (wm *WavesMonitor) processTransaction(tr *Transaction, talr *gowaves.Transa
 
 func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResponse) {
 	amountEur := (float64(talr.Amount) / float64(SatInBTC)) * pc.Prices.EUR
-	messageTelegram(fmt.Sprintf(tr("purchase", "hr"), float64(talr.Amount)/float64(SatInBTC), amountEur), TelAnonTeam)
-	messageTelegram(fmt.Sprintf(tr("purchase", "hr"), float64(talr.Amount)/float64(SatInBTC), amountEur), TelKriptokuna)
+	var priceChanged bool
+	var newPrice float64
+
 	waves := talr.Amount - WavesFee - WavesExchangeFee
 	if waves > 0 {
 		a, p := wm.calculateAssetAmount(uint64(waves))
+		priceChanged, newPrice = wm.checkPriceRecord(p)
 		abr, err := gowaves.WNC.AddressesBalance(TokenAddress)
 		if err == nil {
 			nabr, _ := gowaves.WNC.AddressesBalance(TokenAddress)
@@ -90,11 +93,20 @@ func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResp
 			}
 		}
 	}
+
+	message := fmt.Sprintf(tr("purchase", "hr"), float64(talr.Amount)/float64(SatInBTC), amountEur)
+
+	if priceChanged {
+		message += "\n\n" + fmt.Sprintf(tr("newAintPrice", "hr"), newPrice)
+		messageTelegramPin(message, TelKriptokuna)
+	} else {
+		messageTelegram(message, TelKriptokuna)
+	}
 }
 
 func (wm *WavesMonitor) purchaseAssetAHRK(talr *gowaves.TransactionsAddressLimitResponse) {
 	messageTelegram(fmt.Sprintf(tr("purchaseAhrk", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelAnonTeam)
-	messageTelegram(fmt.Sprintf(tr("purchaseAhrk", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelKriptokuna)
+	// messageTelegram(fmt.Sprintf(tr("purchaseAhrk", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelKriptokuna)
 	waves := talr.Amount * 100 / int(pc.Prices.HRK)
 	a, _ := wm.calculateAssetAmount(uint64(waves))
 	sendAsset(a, TokenID, talr.Sender)
@@ -234,6 +246,23 @@ func (wm *WavesMonitor) collectEarnings(talr *gowaves.TransactionsAddressLimitRe
 			db.Save(u)
 		}
 	}
+}
+
+func (wm *WavesMonitor) checkPriceRecord(price uint64) (changed bool, newPrice float64) {
+	kv := &KeyValue{Key: "aintPriceRecord"}
+	db.FirstOrCreate(kv, kv)
+
+	wPrice := float64(price) / float64(SatInBTC) * pc.Prices.EUR
+	wPrice = math.Floor(wPrice*100) / 100
+	wPriceInt := uint64(wPrice * 100)
+
+	if kv.ValueInt < wPriceInt {
+		kv.ValueInt = wPriceInt
+		db.Save(kv)
+		return true, wPrice
+	}
+
+	return false, wPrice
 }
 
 func initWavesMonitor() {

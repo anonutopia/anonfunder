@@ -3,5 +3,6 @@
     "unknown": "This command doesn't exist.\n\nTo see available commands, please click /help or / button in the bottom right corner of your Telegram window.",
     "status": "⭕️  <strong><u>Your AnonFunder Status</u></strong>\n\n<strong>Address:</strong> %s\n<strong>AINT Amount:</strong>     <u>%.8f</u> AINT\n<strong>WAVES Amount:</strong> <u>%.8f</u> WAVES",
     "purchase": "Imamo novu kupnju AINT tokena: %.8f WAVES (%.2f €) 🚀",
-    "purchaseAhrk": "Imamo novu kupnju AINT tokena: %.2f AHRK 🚀"
+    "purchaseAhrk": "Imamo novu kupnju AINT tokena: %.2f AHRK 🚀",
+    "newAintPrice": "Cijena AINT tokena je narasla na: %.2f €."
 }
