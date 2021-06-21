@@ -98,9 +98,9 @@ func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResp
 
 	if priceChanged {
 		message += "\n\n" + fmt.Sprintf(tr("newAintPrice", "hr"), newPrice)
-		messageTelegramPin(message, TelKriptokuna)
+		messageTelegramPin(message, TelAnonTeam)
 	} else {
-		messageTelegram(message, TelKriptokuna)
+		messageTelegram(message, TelAnonTeam)
 	}
 }
 
@@ -117,12 +117,15 @@ func (wm *WavesMonitor) sellAsset(talr *gowaves.TransactionsAddressLimitResponse
 	logTelegram(fmt.Sprintf("%#v\n\n", talr))
 }
 
-func (wm *WavesMonitor) processExchangeOrder(tr *Transaction, talr *gowaves.TransactionsAddressLimitResponse) {
+func (wm *WavesMonitor) processExchangeOrder(tra *Transaction, talr *gowaves.TransactionsAddressLimitResponse) {
 	if talr.Order1.Sender != talr.Order2.Sender {
-		waves := int(float64(talr.Amount) / float64(SatInBTC) * float64(talr.Price))
+		waves := int(float64(talr.Total) / float64(SatInBTC) * float64(talr.Price))
 
 		if talr.Order1.Sender != TokenAddress && talr.Order1.OrderType == "buy" {
 			wm.splitWaves(waves, talr.Order1.Sender)
+			amountEur := (float64(talr.Total) / float64(SatInBTC)) * pc.Prices.EUR
+			message := fmt.Sprintf(tr("purchase", "hr"), float64(talr.Amount)/float64(SatInBTC), amountEur)
+			messageTelegram(message, TelAnonTeam)
 		}
 	}
 }
@@ -213,10 +216,7 @@ func (wm *WavesMonitor) calculateAssetAmount(wavesAmount uint64) (amount uint64,
 
 	waves := uint64(0)
 
-	for i, a := range opr.Asks {
-		if i == 0 {
-			price = a.Price
-		}
+	for _, a := range opr.Asks {
 		if wavesAmount > 0 {
 			w := a.Amount * a.Price / SatInBTC
 			newWaves := uint64(0)
@@ -231,6 +231,7 @@ func (wm *WavesMonitor) calculateAssetAmount(wavesAmount uint64) (amount uint64,
 				waves += newWaves
 				wavesAmount -= newWaves
 			}
+			price = a.Price
 		}
 	}
 
