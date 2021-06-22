@@ -106,7 +106,7 @@ func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResp
 
 func (wm *WavesMonitor) purchaseAssetAHRK(talr *gowaves.TransactionsAddressLimitResponse) {
 	messageTelegram(fmt.Sprintf(tr("purchaseAhrk", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelKriptokuna)
-	// messageTelegram(fmt.Sprintf(tr("purchaseAhrk", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelKriptokuna)
+
 	waves := talr.Amount * 100 / int(pc.Prices.HRK)
 	a, _ := wm.calculateAssetAmount(uint64(waves))
 	sendAsset(a, TokenID, talr.Sender)
@@ -121,7 +121,7 @@ func (wm *WavesMonitor) processExchangeOrder(tra *Transaction, talr *gowaves.Tra
 	if talr.Order1.Sender != talr.Order2.Sender {
 		var priceChanged bool
 		var newPrice float64
-		// waves := int(float64(talr.Total) / float64(SatInBTC) * float64(talr.Price))
+
 		waves := int(((float64(talr.Amount) / float64(SatInBTC)) * (float64(talr.Price) / float64(SatInBTC))) * float64(SatInBTC))
 
 		_, p := wm.calculateAssetAmount(uint64(waves))
@@ -206,7 +206,6 @@ func (wm *WavesMonitor) doPayouts(height int, after string, total int, value int
 				u.AmountWaves += uint(amount)
 				db.Save(u)
 				log.Printf("Added interest: %s - %.8f", *u.Address, float64(amount)/float64(SatInBTC))
-				// logTelegram(fmt.Sprintf("Added interest: %s - %.8f", *u.Address, float64(amount)/float64(SatInBTC)))
 			}
 		}
 	}
