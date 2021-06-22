@@ -98,14 +98,14 @@ func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResp
 
 	if priceChanged {
 		message += "\n\n" + fmt.Sprintf(tr("newAintPrice", "hr"), newPrice)
-		messageTelegramPin(message, TelAnonTeam)
+		messageTelegramPin(message, TelKriptokuna)
 	} else {
-		messageTelegram(message, TelAnonTeam)
+		messageTelegram(message, TelKriptokuna)
 	}
 }
 
 func (wm *WavesMonitor) purchaseAssetAHRK(talr *gowaves.TransactionsAddressLimitResponse) {
-	messageTelegram(fmt.Sprintf(tr("purchaseAhrk", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelAnonTeam)
+	messageTelegram(fmt.Sprintf(tr("purchaseAhrk", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelKriptokuna)
 	// messageTelegram(fmt.Sprintf(tr("purchaseAhrk", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelKriptokuna)
 	waves := talr.Amount * 100 / int(pc.Prices.HRK)
 	a, _ := wm.calculateAssetAmount(uint64(waves))
@@ -119,13 +119,25 @@ func (wm *WavesMonitor) sellAsset(talr *gowaves.TransactionsAddressLimitResponse
 
 func (wm *WavesMonitor) processExchangeOrder(tra *Transaction, talr *gowaves.TransactionsAddressLimitResponse) {
 	if talr.Order1.Sender != talr.Order2.Sender {
-		waves := int(float64(talr.Total) / float64(SatInBTC) * float64(talr.Price))
+		var priceChanged bool
+		var newPrice float64
+		// waves := int(float64(talr.Total) / float64(SatInBTC) * float64(talr.Price))
+		waves := int(((float64(talr.Amount) / float64(SatInBTC)) * (float64(talr.Price) / float64(SatInBTC))) * float64(SatInBTC))
+
+		_, p := wm.calculateAssetAmount(uint64(waves))
+		priceChanged, newPrice = wm.checkPriceRecord(p)
 
 		if talr.Order1.Sender != TokenAddress && talr.Order1.OrderType == "buy" {
 			wm.splitWaves(waves, talr.Order1.Sender)
-			amountEur := (float64(talr.Total) / float64(SatInBTC)) * pc.Prices.EUR
-			message := fmt.Sprintf(tr("purchase", "hr"), float64(talr.Amount)/float64(SatInBTC), amountEur)
-			messageTelegram(message, TelAnonTeam)
+			amountEur := (float64(waves) / float64(SatInBTC)) * pc.Prices.EUR
+			message := fmt.Sprintf(tr("purchase", "hr"), float64(waves)/float64(SatInBTC), amountEur)
+
+			if priceChanged {
+				message += "\n\n" + fmt.Sprintf(tr("newAintPrice", "hr"), newPrice)
+				messageTelegramPin(message, TelKriptokuna)
+			} else {
+				messageTelegram(message, TelKriptokuna)
+			}
 		}
 	}
 }
