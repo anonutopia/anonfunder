@@ -202,3 +202,7 @@ func total(t int, height int, after string) (int, error) {
 
 	return t, nil
 }
+
+type CalcResponse struct {
+	Amount float64 `json:"amount"`
+}

@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
+	"strconv"
 
 	macaron "gopkg.in/macaron.v1"
 )
@@ -58,4 +60,18 @@ func accumulatedEarnings(ctx *macaron.Context) string {
 	)
 
 	return response
+}
+
+func calculateAints(ctx *macaron.Context) {
+	cr := &CalcResponse{}
+	w := ctx.Params("waves")
+	if wFloat, err := strconv.ParseFloat(w, 64); err == nil {
+		wInt := uint64(wFloat * float64(SatInBTC))
+		a, _ := wm.calculateAssetAmount(wInt)
+		aFloat := float64(a) / float64(SatInBTC)
+		amount := math.Floor(aFloat*float64(SatInBTC)) / float64(SatInBTC)
+		cr.Amount = amount
+	}
+
+	ctx.JSON(200, cr)
 }
