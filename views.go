@@ -38,7 +38,8 @@ func accumulatedEarnings(ctx *macaron.Context) string {
 
 	res := "document.getElementById('earningsWaves').value = %d;\n" +
 		"document.getElementById('earningsAhrk').value = %d;\n" +
-		"document.getElementById('earningsAeur').value = %d;\n"
+		"document.getElementById('earningsAeur').value = %d;\n" +
+		"document.getElementById('referralLink').value += '%s';\n"
 
 	if !u.FunderBotStarted {
 		link := fmt.Sprintf("https://t.me/FunderRobot?start=%s", *u.TempCode)
@@ -57,6 +58,7 @@ func accumulatedEarnings(ctx *macaron.Context) string {
 		u.AmountWaves,
 		u.AmountAhrk,
 		u.AmountAeur,
+		*u.Code,
 	)
 
 	return response

@@ -20,6 +20,10 @@ func (um *UserManager) createUser(m *tb.Message) {
 	}
 }
 
+func (um *UserManager) createUserWeb(address string) {
+
+}
+
 func initUserManager() *UserManager {
 	um := &UserManager{}
 	return um

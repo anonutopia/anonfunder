@@ -27,6 +27,7 @@ type User struct {
 	AnoteRobotStarted bool    `sql:"DEFAULT:false"`
 	FunderBotStarted  bool    `sql:"DEFAULT:false"`
 	TempCode          *string `gorm:"size:255;uniqueIndex"`
+	Code              *string `gorm:"size:255;uniqueIndex"`
 }
 
 func getUser(address string) *User {
