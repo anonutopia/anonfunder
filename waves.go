@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"math/rand"
 	"time"
 
 	"github.com/anonutopia/gowaves"
@@ -98,14 +97,14 @@ func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResp
 
 	if priceChanged {
 		message += "\n\n" + fmt.Sprintf(tr("newAintPrice", "hr"), newPrice)
-		messageTelegramPin(message, TelKriptokuna)
+		messageTelegramPin(message, TelAnonTeam)
 	} else {
-		messageTelegram(message, TelKriptokuna)
+		messageTelegram(message, TelAnonTeam)
 	}
 }
 
 func (wm *WavesMonitor) purchaseAssetAHRK(talr *gowaves.TransactionsAddressLimitResponse) {
-	messageTelegram(fmt.Sprintf(tr("purchaseAhrk", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelKriptokuna)
+	messageTelegram(fmt.Sprintf(tr("purchaseAhrk", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelAnonTeam)
 
 	waves := talr.Amount * 100 / int(pc.Prices.HRK)
 	a, _ := wm.calculateAssetAmount(uint64(waves))
@@ -134,15 +133,16 @@ func (wm *WavesMonitor) processExchangeOrder(tra *Transaction, talr *gowaves.Tra
 
 			if priceChanged {
 				message += "\n\n" + fmt.Sprintf(tr("newAintPrice", "hr"), newPrice)
-				messageTelegramPin(message, TelKriptokuna)
+				messageTelegramPin(message, TelAnonTeam)
 			} else {
-				messageTelegram(message, TelKriptokuna)
+				messageTelegram(message, TelAnonTeam)
 			}
 		}
 	}
 }
 
 func (wm *WavesMonitor) splitWaves(waves int, sender string) {
+	var rest uint
 	// 40% to founder
 	founder := &User{Address: &conf.Founder}
 	db.FirstOrCreate(founder, founder)
@@ -158,12 +158,17 @@ func (wm *WavesMonitor) splitWaves(waves int, sender string) {
 	// 5% to user who referred
 	u := getUser(sender)
 	r := &User{}
-	db.First(r, u.ReferralID)
-	r.AmountWaves += uint(float64(waves) * 0.05)
-	db.Save(r)
+	if r.ID != 0 {
+		db.First(r, u.ReferralID)
+		r.AmountWaves += uint(float64(waves) * 0.05)
+		db.Save(r)
 
-	// 15% to AINTs holders (more than 1.0 AINT)
-	rest := uint(float64(waves) * 0.15)
+		rest = uint(float64(waves) * 0.15)
+	} else {
+		// 15% to AINTs holders (more than 1.0 AINT)
+		rest = uint(float64(waves) * 0.2)
+	}
+
 	ns, err := gowaves.WNC.NodeStatus()
 	if err != nil {
 		log.Println(err)
@@ -196,12 +201,10 @@ func (wm *WavesMonitor) doPayouts(height int, after string, total int, value int
 			ratio := float64(v) / float64(total)
 			amount := int(float64(value) * ratio)
 
-			if amount > 0 {
-				u := &User{Address: &a}
-				if err := db.FirstOrCreate(u, u).Error; err != nil {
-					tid := int(SatInBTC) + rand.Intn(999999999-int(SatInBTC))
-					u.TelegramID = &tid
-					db.FirstOrCreate(u, u)
+			if amount > 0 && len(a) > 0 {
+				u := getUser(a)
+				if u.ID == 0 {
+					u = um.createUserWeb(a)
 				}
 				u.AmountWaves += uint(amount)
 				db.Save(u)
