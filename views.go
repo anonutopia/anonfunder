@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"math"
 	"strconv"
 
@@ -11,12 +10,17 @@ import (
 
 func accumulatedEarnings(ctx *macaron.Context) string {
 	ctx.Resp.Header().Set("Content-Type", "application/javascript; charset=utf-8")
+
 	address := ctx.Params("address")
 
-	u := &User{Address: &address}
-	if err := db.Unscoped().FirstOrCreate(u, u).Error; err != nil {
-		log.Println(err)
-		logTelegram(err.Error())
+	if len(address) == 0 {
+		return ""
+	}
+
+	user := getUser(address)
+
+	if user.ID == 0 {
+		user = um.createUserWeb(address)
 	}
 
 	ref := ctx.GetCookie("referral")
@@ -27,38 +31,38 @@ func accumulatedEarnings(ctx *macaron.Context) string {
 			db.Where("nickname = ?", ref).First(r)
 		}
 
-		if r.ID != 0 && u.ReferralID == 0 {
-			u.ReferralID = r.ID
+		if r.ID != 0 && user.ReferralID == 0 {
+			user.ReferralID = r.ID
 		}
 	}
 
 	rs := randString(10)
-	u.TempCode = &rs
-	db.Save(u)
+	user.TempCode = &rs
+	db.Save(user)
 
 	res := "document.getElementById('earningsWaves').value = %d;\n" +
 		"document.getElementById('earningsAhrk').value = %d;\n" +
 		"document.getElementById('earningsAeur').value = %d;\n" +
 		"document.getElementById('referralLink').value += '%s';\n"
 
-	if !u.FunderBotStarted {
-		link := fmt.Sprintf("https://t.me/FunderRobot?start=%s", *u.TempCode)
+	if !user.FunderBotStarted {
+		link := fmt.Sprintf("https://t.me/FunderRobot?start=%s", *user.TempCode)
 		res += "document.getElementById('btnFunderBot').classList.remove('disabled');\n"
 		res += fmt.Sprintf("document.getElementById('btnFunderBot').href='%s';\n", link)
 	}
 
-	// if !u.AnoteRobotStarted {
-	// 	link := fmt.Sprintf("https://t.me/AnoteRobot?start=%s", *u.TempCode)
+	// if !user.AnoteRobotStarted {
+	// 	link := fmt.Sprintf("https://t.me/AnoteRobot?start=%s", *user.TempCode)
 	// 	res += "document.getElementById('btnAnoteRobot').classList.remove('disabled');\n"
 	// 	res += fmt.Sprintf("document.getElementById('btnAnoteRobot').href='%s';\n", link)
 	// }
 
 	response := fmt.Sprintf(
 		res,
-		u.AmountWaves,
-		u.AmountAhrk,
-		u.AmountAeur,
-		*u.Code,
+		user.AmountWaves,
+		user.AmountAhrk,
+		user.AmountAeur,
+		*user.Code,
 	)
 
 	return response

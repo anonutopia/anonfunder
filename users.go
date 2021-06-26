@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	tb "gopkg.in/tucnak/telebot.v2"
 )
 
@@ -20,8 +22,22 @@ func (um *UserManager) createUser(m *tb.Message) {
 	}
 }
 
-func (um *UserManager) createUserWeb(address string) {
+func (um *UserManager) createUserWeb(address string) *User {
+	u := &User{Address: &address}
 
+	if err := db.FirstOrCreate(u, u).Error; err != nil {
+		log.Println(err)
+		logTelegram(err.Error())
+	} else {
+		rs := randString(10)
+		u.Code = &rs
+		if err := db.Save(u).Error; err != nil {
+			log.Println(err)
+			logTelegram(err.Error())
+		}
+	}
+
+	return u
 }
 
 func initUserManager() *UserManager {
