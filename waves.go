@@ -163,9 +163,10 @@ func (wm *WavesMonitor) splitWaves(waves int, sender string) {
 		r.AmountWaves += uint(float64(waves) * 0.05)
 		db.Save(r)
 
+		// 15% to AINTs holders (more than 1.0 AINT)
 		rest = uint(float64(waves) * 0.15)
 	} else {
-		// 15% to AINTs holders (more than 1.0 AINT)
+		// 20% to AINTs holders (more than 1.0 AINT)
 		rest = uint(float64(waves) * 0.2)
 	}
 
