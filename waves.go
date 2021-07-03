@@ -99,6 +99,9 @@ func (wm *WavesMonitor) purchaseAssetAHRK(talr *gowaves.TransactionsAddressLimit
 
 func (wm *WavesMonitor) purchaseAssetUSDN(talr *gowaves.TransactionsAddressLimitResponse) {
 	messageTelegram(fmt.Sprintf(tr("purchaseUsdn", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelAnonTeam)
+	waves := int(float64(talr.Amount) / float64(AHRKDec) / pc.Prices.USD * float64(SatInBTC))
+	a, _ := wm.calculateAssetAmount(uint64(waves))
+	sendAsset(a, TokenID, talr.Sender)
 }
 
 func (wm *WavesMonitor) sellAsset(talr *gowaves.TransactionsAddressLimitResponse) {

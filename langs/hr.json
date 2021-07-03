@@ -4,5 +4,6 @@
     "status": "⭕️  <strong><u>Your AnonFunder Status</u></strong>\n\n<strong>Address:</strong> %s\n<strong>AINT Amount:</strong>     <u>%.8f</u> AINT\n<strong>WAVES Amount:</strong> <u>%.8f</u> WAVES",
     "purchase": "Imamo novu kupnju AINT tokena: %.8f WAVES (%.2f €) 🚀",
     "purchaseAhrk": "Imamo novu kupnju AINT tokena: %.2f AHRK 🚀",
+    "purchaseUsdn": "Imamo novu kupnju AINT tokena: %.2f USDN 🚀",
     "newAintPrice": "Cijena AINT tokena je narasla na: %.2f €."
 }
