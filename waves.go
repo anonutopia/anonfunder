@@ -106,11 +106,13 @@ func (wm *WavesMonitor) processExchangeOrder(tra *Transaction, talr *gowaves.Tra
 	var newPrice float64
 	var message string
 
-	waves := int(((float64(talr.Amount) / float64(SatInBTC)) * (float64(talr.Price) / float64(SatInBTC))) * float64(SatInBTC))
-	_, p := wm.calculateAssetAmount(uint64(waves))
-	priceChanged, newPrice = wm.checkPriceRecord(p)
+	if talr.Order1.OrderType == "buy" &&
+		talr.Order1.AssetPair.AmountAsset == TokenID {
 
-	if talr.Order1.OrderType == "buy" {
+		waves := int(((float64(talr.Amount) / float64(SatInBTC)) * (float64(talr.Price) / float64(SatInBTC))) * float64(SatInBTC))
+		_, p := wm.calculateAssetAmount(uint64(waves))
+		priceChanged, newPrice = wm.checkPriceRecord(p)
+
 		amountEur := (float64(waves) / float64(SatInBTC)) * pc.Prices.EUR
 
 		if talr.Order2.Sender == TokenAddress {
