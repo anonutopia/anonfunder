@@ -61,6 +61,8 @@ func (wm *WavesMonitor) processTransaction(tr *Transaction, talr *gowaves.Transa
 				wm.collectEarnings(talr)
 			} else if talr.AssetID == AHRKId {
 				wm.purchaseAssetAHRK(talr)
+			} else if talr.AssetID == USDNId {
+				wm.purchaseAssetUSDN(talr)
 			}
 		}
 	}
@@ -89,11 +91,14 @@ func (wm *WavesMonitor) purchaseAsset(talr *gowaves.TransactionsAddressLimitResp
 }
 
 func (wm *WavesMonitor) purchaseAssetAHRK(talr *gowaves.TransactionsAddressLimitResponse) {
-	messageTelegram(fmt.Sprintf(tr("purchaseAhrk", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelKriptokuna)
-
-	waves := talr.Amount * 100 / int(pc.Prices.HRK)
+	messageTelegram(fmt.Sprintf(tr("purchaseAhrk", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelAnonTeam)
+	waves := int(float64(talr.Amount) / float64(AHRKDec) / pc.getHRK() * float64(SatInBTC))
 	a, _ := wm.calculateAssetAmount(uint64(waves))
 	sendAsset(a, TokenID, talr.Sender)
+}
+
+func (wm *WavesMonitor) purchaseAssetUSDN(talr *gowaves.TransactionsAddressLimitResponse) {
+	messageTelegram(fmt.Sprintf(tr("purchaseUsdn", "hr"), float64(talr.Amount)/float64(AHRKDec)), TelAnonTeam)
 }
 
 func (wm *WavesMonitor) sellAsset(talr *gowaves.TransactionsAddressLimitResponse) {

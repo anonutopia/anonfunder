@@ -13,11 +13,15 @@ type Prices struct {
 	BTC float64 `json:"BTC"`
 	ETH float64 `json:"ETH"`
 	EUR float64 `json:"EUR"`
-	HRK float64 `json:"HRK"`
+	USD float64 `json:"USD"`
 }
 
 type PriceClient struct {
 	Prices *Prices
+}
+
+func (pc *PriceClient) getHRK() float64 {
+	return pc.Prices.USD * HRKUSD
 }
 
 func (pc *PriceClient) doRequest() (*Prices, error) {

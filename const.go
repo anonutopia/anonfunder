@@ -5,7 +5,7 @@ const (
 	SatInBTC = uint64(100000000)
 
 	// PricesURL is URL for crypo prices
-	PricesURL = "https://min-api.cryptocompare.com/data/price?fsym=WAVES&tsyms=BTC,ETH,EUR,HRK"
+	PricesURL = "https://min-api.cryptocompare.com/data/price?fsym=WAVES&tsyms=BTC,ETH,EUR,HRK,USD"
 
 	// TelAnonOps group for error logging
 	TelAnonOps = -1001213539865
@@ -51,4 +51,10 @@ const (
 
 	// AHRKDec represents number of decimals in AHRK
 	AHRKDec = uint64(1000000)
+
+	// USDNId is USDN asset id
+	USDNId = string("DG2xFkPdDwKUoBkzGAhQtLpSGzfXLiCYPEzeKH2Ad24p")
+
+	// HRK to USD
+	HRKUSD = 6.330004
 )
