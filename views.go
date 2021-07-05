@@ -88,12 +88,17 @@ func websiteData(ctx *macaron.Context) string {
 	response := ""
 	aintPerc := 0.0
 	circulatingAint := int64(0)
+	aintcPerc := 0.0
+	circulatingAintc := int64(0)
 	ahrkPerc := 0.0
 	circulatingAhrk := int64(0)
 
 	res := "document.getElementById('limit-ahrk').style.width = '%.1f%%';\n" +
 		"document.getElementById('circulating-ahrk').innerHTML = '%d';\n" +
 		"document.getElementById('limit-ahrk2').innerHTML = '%.1f';\n" +
+		"document.getElementById('limit-aintc').style.width = '%.1f%%';\n" +
+		"document.getElementById('circulating-aintc').innerHTML = '%d';\n" +
+		"document.getElementById('limit-aintc2').innerHTML = '%.1f';\n" +
 		"document.getElementById('limit-aint').style.width = '%.1f%%';\n" +
 		"document.getElementById('circulating-aint').innerHTML = '%d';\n" +
 		"document.getElementById('limit-aint1').innerHTML = '%.1f';\n" +
@@ -111,6 +116,10 @@ func websiteData(ctx *macaron.Context) string {
 		circulatingAint = 1900000000000 - abr.Balance - 475000000000
 		aintPerc = float64(circulatingAint) / float64(1900000000000)
 		aintPerc = aintPerc * 100
+
+		circulatingAintc = 1000000000000 - abr.Balance
+		aintcPerc = float64(circulatingAintc) / float64(1000000000000)
+		aintcPerc = aintcPerc * 100
 	}
 
 	response = fmt.Sprintf(
@@ -118,6 +127,9 @@ func websiteData(ctx *macaron.Context) string {
 		ahrkPerc,
 		circulatingAhrk/int64(AHRKDec),
 		ahrkPerc,
+		aintcPerc,
+		circulatingAintc/int64(SatInBTC),
+		aintcPerc,
 		aintPerc,
 		circulatingAint/int64(SatInBTC),
 		aintPerc,
