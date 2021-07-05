@@ -55,6 +55,9 @@ const (
 	// USDNId is USDN asset id
 	USDNId = string("DG2xFkPdDwKUoBkzGAhQtLpSGzfXLiCYPEzeKH2Ad24p")
 
+	// AHRKAddress is AHRK waves address
+	AHRKAddress = "3PPc3AP75DzoL8neS4e53tZ7ybUAVxk2jAb"
+
 	// HRK to USD
 	HRKUSD = 6.330004
 )

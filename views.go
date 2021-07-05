@@ -5,6 +5,7 @@ import (
 	"math"
 	"strconv"
 
+	"github.com/anonutopia/gowaves"
 	macaron "gopkg.in/macaron.v1"
 )
 
@@ -80,4 +81,48 @@ func calculateAints(ctx *macaron.Context) {
 	}
 
 	ctx.JSON(200, cr)
+}
+
+func websiteData(ctx *macaron.Context) string {
+	ctx.Resp.Header().Set("Content-Type", "application/javascript; charset=utf-8")
+	response := ""
+	aintPerc := 0.0
+	circulatingAint := int64(0)
+	ahrkPerc := 0.0
+	circulatingAhrk := int64(0)
+
+	res := "document.getElementById('limit-ahrk').style.width = '%.1f%%';\n" +
+		"document.getElementById('circulating-ahrk').innerHTML = '%d';\n" +
+		"document.getElementById('limit-ahrk2').innerHTML = '%.1f';\n" +
+		"document.getElementById('limit-aint').style.width = '%.1f%%';\n" +
+		"document.getElementById('circulating-aint').innerHTML = '%d';\n" +
+		"document.getElementById('limit-aint1').innerHTML = '%.1f';\n" +
+		"document.getElementById('limit-aint2').innerHTML = '%.1f';\n"
+
+	abr, err := gowaves.WNC.AssetsBalance(AHRKAddress, AHRKId)
+	if err == nil {
+		circulatingAhrk = 1000000000000 - abr.Balance
+		ahrkPerc = float64(circulatingAhrk) / float64(1000000000000)
+		ahrkPerc = ahrkPerc * 100
+	}
+
+	abr, err = gowaves.WNC.AssetsBalance(TokenAddress, TokenID)
+	if err == nil {
+		circulatingAint = 1900000000000 - abr.Balance - 475000000000
+		aintPerc = float64(circulatingAint) / float64(1900000000000)
+		aintPerc = aintPerc * 100
+	}
+
+	response = fmt.Sprintf(
+		res,
+		ahrkPerc,
+		circulatingAhrk/int64(AHRKDec),
+		ahrkPerc,
+		aintPerc,
+		circulatingAint/int64(SatInBTC),
+		aintPerc,
+		aintPerc,
+	)
+
+	return response
 }
