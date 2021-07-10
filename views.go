@@ -86,8 +86,8 @@ func calculateAints(ctx *macaron.Context) {
 func websiteData(ctx *macaron.Context) string {
 	ctx.Resp.Header().Set("Content-Type", "application/javascript; charset=utf-8")
 	response := ""
-	aintPerc := 0.0
-	circulatingAint := int64(0)
+	// aintPerc := 0.0
+	// circulatingAint := int64(0)
 	aintcPerc := 0.0
 	circulatingAintc := int64(0)
 	ahrkPerc := 0.0
@@ -98,11 +98,12 @@ func websiteData(ctx *macaron.Context) string {
 		"document.getElementById('limit-ahrk2').innerHTML = '%.1f';\n" +
 		"document.getElementById('limit-aintc').style.width = '%.1f%%';\n" +
 		"document.getElementById('circulating-aintc').innerHTML = '%d';\n" +
-		"document.getElementById('limit-aintc2').innerHTML = '%.1f';\n" +
-		"document.getElementById('limit-aint').style.width = '%.1f%%';\n" +
-		"document.getElementById('circulating-aint').innerHTML = '%d';\n" +
-		"document.getElementById('limit-aint1').innerHTML = '%.1f';\n" +
-		"document.getElementById('limit-aint2').innerHTML = '%.1f';\n"
+		"document.getElementById('limit-aintc2').innerHTML = '%.1f';\n"
+
+		// "document.getElementById('limit-aint').style.width = '%.1f%%';\n" +
+		// "document.getElementById('circulating-aint').innerHTML = '%d';\n" +
+		// "document.getElementById('limit-aint1').innerHTML = '%.1f';\n" +
+		// "document.getElementById('limit-aint2').innerHTML = '%.1f';\n"
 
 	abr, err := gowaves.WNC.AssetsBalance(AHRKAddress, AHRKId)
 	if err == nil {
@@ -113,9 +114,9 @@ func websiteData(ctx *macaron.Context) string {
 
 	abr, err = gowaves.WNC.AssetsBalance(TokenAddress, TokenID)
 	if err == nil {
-		circulatingAint = 1900000000000 - abr.Balance - 475000000000
-		aintPerc = float64(circulatingAint) / float64(1900000000000)
-		aintPerc = aintPerc * 100
+		// circulatingAint = 1900000000000 - abr.Balance - 475000000000
+		// aintPerc = float64(circulatingAint) / float64(1900000000000)
+		// aintPerc = aintPerc * 100
 
 		circulatingAintc = 1000000000000 - abr.Balance
 		aintcPerc = float64(circulatingAintc) / float64(1000000000000)
@@ -130,10 +131,7 @@ func websiteData(ctx *macaron.Context) string {
 		aintcPerc,
 		circulatingAintc/int64(SatInBTC),
 		aintcPerc,
-		aintPerc,
-		circulatingAint/int64(SatInBTC),
-		aintPerc,
-		aintPerc,
+		// aintPerc,
 	)
 
 	return response
