@@ -44,7 +44,7 @@ func main() {
 	m = initMacaron()
 
 	m.Get("/website.js", websiteData)
-	m.Get("/calculate/:waves", calculateAints)
+	m.Get("/calculate/:currency/:amount", calculateAints)
 	m.Get("/:address/earnings.js", accumulatedEarnings)
 
 	logTelegram("AnonFunder daemon successfully started. 🚀")

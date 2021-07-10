@@ -70,12 +70,18 @@ func accumulatedEarnings(ctx *macaron.Context) string {
 }
 
 func calculateAints(ctx *macaron.Context) {
+	wInt := uint64(0)
 	cr := &CalcResponse{}
-	w := ctx.Params("waves")
-	if wFloat, err := strconv.ParseFloat(w, 64); err == nil {
-		wInt := uint64(wFloat * float64(SatInBTC))
-		a, _ := wm.calculateAssetAmount(wInt)
-		aFloat := float64(a) / float64(SatInBTC)
+	c := ctx.Params("currency")
+	a := ctx.Params("amount")
+	if aFloat, err := strconv.ParseFloat(a, 64); err == nil {
+		if c == "ahrk" {
+			wInt = uint64(aFloat / pc.getHRK() * float64(SatInBTC))
+		} else {
+			wInt = uint64(aFloat * float64(SatInBTC))
+		}
+		aa, _ := wm.calculateAssetAmount(wInt)
+		aFloat := float64(aa) / float64(SatInBTC)
 		amount := math.Floor(aFloat*float64(SatInBTC)) / float64(SatInBTC)
 		cr.Amount = amount
 	}
