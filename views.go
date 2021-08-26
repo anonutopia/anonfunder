@@ -60,7 +60,7 @@ func accumulatedEarnings(ctx *macaron.Context) string {
 
 	response := fmt.Sprintf(
 		res,
-		user.AmountWaves,
+		user.AmountAhrkAint,
 		user.AmountAhrk,
 		user.AmountAeur,
 		*user.Code,

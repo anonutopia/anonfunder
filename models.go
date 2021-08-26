@@ -23,6 +23,7 @@ type User struct {
 	Referral          *User
 	AmountWaves       uint
 	AmountAhrk        uint
+	AmountAhrkAint    uint
 	AmountAeur        uint
 	AnoteRobotStarted bool    `sql:"DEFAULT:false"`
 	FunderBotStarted  bool    `sql:"DEFAULT:false"`

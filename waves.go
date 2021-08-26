@@ -262,10 +262,10 @@ func (wm *WavesMonitor) calculateAssetAmount(wavesAmount uint64) (amount uint64,
 
 func (wm *WavesMonitor) collectEarnings(talr *gowaves.TransactionsAddressLimitResponse) {
 	u := getUser(talr.Sender)
-	if u.ID != 0 && u.AmountWaves > 0 {
-		err := sendAsset(uint64(u.AmountWaves), "", talr.Sender)
+	if u.ID != 0 && u.AmountAhrkAint > 0 {
+		err := sendAsset(uint64(u.AmountAhrkAint), AHRKId, talr.Sender)
 		if err == nil {
-			u.AmountWaves = 0
+			u.AmountAhrkAint = 0
 			db.Save(u)
 		}
 	}
