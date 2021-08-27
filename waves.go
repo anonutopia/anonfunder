@@ -113,6 +113,7 @@ func (wm *WavesMonitor) processExchangeOrder(tra *Transaction, talr *gowaves.Tra
 	var priceChanged bool
 	var newPrice float64
 	var message string
+	var messageEn string
 
 	if talr.Order1.OrderType == "buy" &&
 		talr.Order1.AssetPair.AmountAsset == TokenID {
@@ -126,6 +127,7 @@ func (wm *WavesMonitor) processExchangeOrder(tra *Transaction, talr *gowaves.Tra
 		if talr.Order2.Sender == TokenAddress {
 			wm.splitWaves(waves, talr.Order1.Sender)
 			message = fmt.Sprintf(tr("purchase", "hr"), float64(waves)/float64(SatInBTC), amountEur)
+			messageEn = fmt.Sprintf(tr("purchase", "en"), float64(waves)/float64(SatInBTC), amountEur)
 		} else {
 			messagePvt := fmt.Sprintf(tr("purchase", "hr"), float64(waves)/float64(SatInBTC), amountEur)
 			messageTelegram(messagePvt, TelAnonTeam)
@@ -134,15 +136,21 @@ func (wm *WavesMonitor) processExchangeOrder(tra *Transaction, talr *gowaves.Tra
 		if priceChanged {
 			if len(message) > 0 {
 				message += "\n\n"
+				messageEn += "\n\n"
 			}
 			message += fmt.Sprintf(tr("newAintPrice", "hr"), newPrice)
+			messageEn += fmt.Sprintf(tr("newAintPrice", "en"), newPrice)
 		}
 
 		if len(message) > 0 {
 			if priceChanged {
 				messageTelegramPin(message, TelKriptokuna)
+				messageTelegramPin(message, TelAnonBalkan)
+				messageTelegramPin(messageEn, TelAnonutopia)
 			} else {
 				messageTelegram(message, TelKriptokuna)
+				messageTelegram(message, TelAnonBalkan)
+				messageTelegram(messageEn, TelAnonutopia)
 			}
 		}
 	}
