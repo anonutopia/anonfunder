@@ -113,9 +113,12 @@ func websiteData(ctx *macaron.Context) string {
 
 	abr, err := gowaves.WNC.AssetsBalance(AHRKAddress, AHRKId)
 	if err == nil {
-		circulatingAhrk = 1000000000000 - abr.Balance
-		ahrkPerc = float64(circulatingAhrk) / float64(1000000000000)
-		ahrkPerc = ahrkPerc * 100
+		abr2, err := gowaves.WNC.AssetsBalance(TokenAddress, AHRKId)
+		if err == nil {
+			circulatingAhrk = 1000000000000 - abr.Balance - abr2.Balance
+			ahrkPerc = float64(circulatingAhrk) / float64(1000000000000)
+			ahrkPerc = ahrkPerc * 100
+		}
 	}
 
 	abr, err = gowaves.WNC.AssetsBalance(TokenAddress, TokenID)
