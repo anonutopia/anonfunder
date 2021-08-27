@@ -7,6 +7,9 @@ const (
 	// PricesURL is URL for crypo prices
 	PricesURL = "https://min-api.cryptocompare.com/data/price?fsym=WAVES&tsyms=BTC,ETH,EUR,HRK,USD"
 
+	// PricesHNBURL is URL for fiat prices
+	PricesHNBURL = "https://api.hnb.hr/tecajn/v1?valuta=USD"
+
 	// TelAnonOps group for error logging
 	TelAnonOps = -1001213539865
 
@@ -57,7 +60,4 @@ const (
 
 	// AHRKAddress is AHRK waves address
 	AHRKAddress = "3PPc3AP75DzoL8neS4e53tZ7ybUAVxk2jAb"
-
-	// HRK to USD
-	HRKUSD = 6.330004
 )

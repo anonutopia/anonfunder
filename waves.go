@@ -214,9 +214,10 @@ func (wm *WavesMonitor) doPayouts(height int, after string, total int, value int
 				if u.ID == 0 {
 					u = um.createUserWeb(a)
 				}
-				u.AmountWaves += uint(amount)
+				newAmount := uint(float64(amount) / float64(SatInBTC) * pc.getHRK() * float64(AHRKDec))
+				u.AmountAhrkAint += newAmount
 				db.Save(u)
-				log.Printf("Added interest: %s - %.8f", *u.Address, float64(amount)/float64(SatInBTC))
+				log.Printf("Added interest: %s - %.6f", *u.Address, float64(newAmount)/float64(AHRKDec))
 			}
 		}
 	}
