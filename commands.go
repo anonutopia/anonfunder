@@ -55,5 +55,7 @@ func statusCommand(m *tb.Message) {
 }
 
 func unknownCommand(m *tb.Message) {
-	bot.Send(m.Sender, gotrans.T("unknown"))
+	if m.Private() {
+		bot.Send(m.Sender, gotrans.T("unknown"))
+	}
 }
