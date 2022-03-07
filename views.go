@@ -117,9 +117,12 @@ func websiteData(ctx *macaron.Context) string {
 		if err == nil {
 			abr3, err := gowaves.WNC.AssetsBalance("3PCGYBU7kG44GtXbZGUctCVcq9uR8W4eVXk", AHRKId)
 			if err == nil {
-				circulatingAhrk = 1000000000000 - abr.Balance - abr2.Balance - abr3.Balance
-				ahrkPerc = float64(circulatingAhrk) / float64(1000000000000)
-				ahrkPerc = ahrkPerc * 100
+				abr4, err := gowaves.WNC.AssetsBalance("3PLrCnhKyX5iFbGDxbqqMvea5VAqxMcinPW", AHRKId)
+				if err == nil {
+					circulatingAhrk = 1000000000000 - abr.Balance - abr2.Balance - abr3.Balance - abr4.Balance
+					ahrkPerc = float64(circulatingAhrk) / float64(1000000000000)
+					ahrkPerc = ahrkPerc * 100
+				}
 			}
 		}
 	}
