@@ -66,4 +66,10 @@ const (
 
 	// AHRKAddress is AHRK waves address
 	AHRKAddress = "3PPc3AP75DzoL8neS4e53tZ7ybUAVxk2jAb"
+
+	// AEUR Address
+	AEURAddress = "3PAAbqdCtmCJjoNWTgBribig57gvR4LDLsX"
+
+	// AEURId is AEUR asset id
+	AEURId = "EDjBRRiHoAdX1RG7sgYtv5BrPT8z19QVNDn8WfL9z2ve"
 )

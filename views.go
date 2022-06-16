@@ -92,24 +92,22 @@ func calculateAints(ctx *macaron.Context) {
 func websiteData(ctx *macaron.Context) string {
 	ctx.Resp.Header().Set("Content-Type", "application/javascript; charset=utf-8")
 	response := ""
-	// aintPerc := 0.0
-	// circulatingAint := int64(0)
 	aintcPerc := 0.0
 	circulatingAintc := int64(0)
 	ahrkPerc := 0.0
 	circulatingAhrk := int64(0)
+	aeurPerc := 0.0
+	circulatingAeur := int64(0)
 
 	res := "document.getElementById('limit-ahrk').style.width = '%.1f%%';\n" +
 		"document.getElementById('circulating-ahrk').innerHTML = '%d';\n" +
 		"document.getElementById('limit-ahrk2').innerHTML = '%.1f';\n" +
+		"document.getElementById('limit-aeur').style.width = '%.1f%%';\n" +
+		"document.getElementById('circulating-aeur').innerHTML = '%d';\n" +
+		"document.getElementById('limit-aeur2').innerHTML = '%.1f';\n" +
 		"document.getElementById('limit-aintc').style.width = '%.1f%%';\n" +
 		"document.getElementById('circulating-aintc').innerHTML = '%d';\n" +
 		"document.getElementById('limit-aintc2').innerHTML = '%.1f';\n"
-
-		// "document.getElementById('limit-aint').style.width = '%.1f%%';\n" +
-		// "document.getElementById('circulating-aint').innerHTML = '%d';\n" +
-		// "document.getElementById('limit-aint1').innerHTML = '%.1f';\n" +
-		// "document.getElementById('limit-aint2').innerHTML = '%.1f';\n"
 
 	abr, err := gowaves.WNC.AssetsBalance(AHRKAddress, AHRKId)
 	if err == nil {
@@ -127,12 +125,24 @@ func websiteData(ctx *macaron.Context) string {
 		}
 	}
 
+	abre, err := gowaves.WNC.AssetsBalance(AEURAddress, AEURId)
+	if err == nil {
+		abr2, err := gowaves.WNC.AssetsBalance(TokenAddress, AEURId)
+		if err == nil {
+			abr3, err := gowaves.WNC.AssetsBalance("3PCGYBU7kG44GtXbZGUctCVcq9uR8W4eVXk", AEURId)
+			if err == nil {
+				abr4, err := gowaves.WNC.AssetsBalance("3PLrCnhKyX5iFbGDxbqqMvea5VAqxMcinPW", AEURId)
+				if err == nil {
+					circulatingAeur = 1000000000000 - abre.Balance - abr2.Balance - abr3.Balance - abr4.Balance
+					aeurPerc = float64(circulatingAeur) / float64(1000000000000)
+					aeurPerc = aeurPerc * 100
+				}
+			}
+		}
+	}
+
 	abr, err = gowaves.WNC.AssetsBalance(TokenAddress, TokenID)
 	if err == nil {
-		// circulatingAint = 1900000000000 - abr.Balance - 475000000000
-		// aintPerc = float64(circulatingAint) / float64(1900000000000)
-		// aintPerc = aintPerc * 100
-
 		circulatingAintc = 1000000000000 - abr.Balance
 		aintcPerc = float64(circulatingAintc) / float64(1000000000000)
 		aintcPerc = aintcPerc * 100
@@ -143,10 +153,12 @@ func websiteData(ctx *macaron.Context) string {
 		ahrkPerc,
 		circulatingAhrk/int64(AHRKDec),
 		ahrkPerc,
+		aeurPerc,
+		circulatingAeur/int64(AHRKDec),
+		aeurPerc,
 		aintcPerc,
 		circulatingAintc/int64(SatInBTC),
 		aintcPerc,
-		// aintPerc,
 	)
 
 	return response
