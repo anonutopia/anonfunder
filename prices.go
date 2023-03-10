@@ -145,7 +145,7 @@ func (pc *PriceClient) start() {
 
 			if p, err := pc.doRequestHNB(); err != nil {
 				log.Println(err.Error())
-				logTelegram(err.Error())
+				// logTelegram(err.Error())
 			} else {
 				pc.PricesHNB = p
 			}
