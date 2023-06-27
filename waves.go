@@ -15,6 +15,7 @@ type WavesMonitor struct {
 }
 
 func (wm *WavesMonitor) start() {
+	gowaves.WMC.Host = "https://nodes.wavesplatform.com/"
 	wm.StartedTime = time.Now().Unix() * 1000
 	for {
 		// todo - make sure that everything is ok with 100 here

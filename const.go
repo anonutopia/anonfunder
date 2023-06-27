@@ -38,7 +38,7 @@ const (
 	WavesMonitorTick = 10
 
 	// WavesNodeURL is an URL for Waves Node
-	WavesNodeURL = "https://nodes.wavesnodes.com"
+	WavesNodeURL = "https://nodes.wavesplatform.com"
 
 	// MatcherNodeURL is an URL for Waves Node
 	MatcherNodeURL = "https://matcher.waves.exchange"
