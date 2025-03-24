@@ -120,7 +120,7 @@ func (pc *PriceClient) doRequestHNB() (*PricesHNB, error) {
 		if res.StatusCode != 200 {
 			log.Println(string(body))
 			err := errors.New(res.Status)
-			logTelegram(err.Error())
+			// logTelegram(err.Error())
 			return nil, err
 		}
 		json.Unmarshal(body, &prices)
